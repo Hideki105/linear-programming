@@ -3,7 +3,7 @@ import time
 import numpy   as np
 import os
 
-class lp():
+class lp_interior_point():
     def __init__(self,A,b,c):
         #初期化処理
         m = A.shape[1]
@@ -21,6 +21,10 @@ class lp():
         self.c = c
         return 
     
+    def solve(self):
+        #主双対内点法による数値解析
+        return
+
     def mu(self,xk,zk): 
         return np.dot(xk,zk)/len(xk)
     
@@ -29,19 +33,20 @@ class lp():
         return np.dot(c,xk) - np.dot(b,yk)
     
     def readcsv(self,csvfn):
+        #csvファイルの読み出し
         d_ = np.loadtxt(csvfn,delimiter=",")
         return d_
 
     def savecsv(self,d_,logpath="."):
+        #csvファイルの書き出し
         logpath = os.path.join(logpath,"log.csv")
         with open(logpath,"a") as f:
             np.savetxt(f,d_.reshape(1,d_.size), delimiter=",")
         return
 
     def log(self,xk,yk,zk,muk,wk,dt,logpath="."):
+        #主双対内点法による処理を記録
         """
-        主双対内点法による処理を記録する。
-        
         mu_ | 主変数xと双対変数zの平均値xT*z/N        
         w_  | 双対ギャップcT*x - bT*y
         cx_ | 主問題の目的関数cT*x
@@ -64,6 +69,7 @@ class lp():
         return
 
     def savefig(self,logpath="."):
+        #記録した主双対内点法のグラフ化
         csvpath = os.path.join(logpath,"log.csv")
         d_ = self.readcsv(csvpath)
         for i in range(d_.shape[1]):
@@ -75,7 +81,7 @@ class lp():
             plt.savefig(pngpath)
             plt.close()
 
-class lp_path(lp):
+class lp_path(lp_interior_point):
     """
     日付: 2021/03/31
     概要:
@@ -141,7 +147,7 @@ class lp_path(lp):
     
     
     def solve(self,vervose=False,logpath=".",eps=1e-3):
-        #
+        #主双対内点法による数値解析
         t0 = time.time()
         A  = self.A
         b  = self.b
@@ -177,9 +183,7 @@ class lp_path(lp):
         return xk,yk,zk
 
 
-
-
-class lp_affine(lp):
+class lp_affine(lp_interior_point):
     """
     日付: 2021/03/31
     概要:
@@ -241,8 +245,8 @@ class lp_affine(lp):
         
         return xk,yk,zk
     
-    def solve(self,vervose=False,logpath="."):
-        #
+    def solve(self,vervose=False,logpath=".",eps=1e-3):
+        #主双対内点法による数値解析
         t0 = time.time()
         A  = self.A
         b  = self.b
@@ -273,9 +277,11 @@ class lp_affine(lp):
             dt = t1 -t0
             if vervose == True:
                 self.log(xk,yk,zk,muk,wk,dt,logpath)
+            if np.abs(muk) < eps:
+                break
         return xk,yk,zk
 
-class lp_potential(lp):
+class lp_potential(lp_interior_point):
     """
     日付: 2021/03/31
     概要:
@@ -351,8 +357,8 @@ class lp_potential(lp):
 
         return xk,yk,zk
 
-    def solve(self,vervose=False,logpath="."):
-        #
+    def solve(self,vervose=False,logpath=".",eps=1e-3):
+        #主双対内点法による数値解析
         t0 = time.time()
         A  = self.A
         b  = self.b
@@ -383,6 +389,8 @@ class lp_potential(lp):
             dt = t1 -t0
             if vervose == True:
                 self.log(xk,yk,zk,muk,wk,dt,logpath)
+            if np.abs(muk) < eps:
+                break
         return xk,yk,zk
 
 if __name__ == "__main__":
