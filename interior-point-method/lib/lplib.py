@@ -1,10 +1,7 @@
 import matplotlib.pyplot as plt
-import seaborn as sns
 import time
 import numpy   as np
 import os
-from scipy.sparse import csr_matrix, csc_matrix
-from scipy.sparse.linalg import inv, eigs
 
 class lp_path():
     """
