@@ -16,9 +16,9 @@ https://qiita.com/momo10/items/824c2fd8a0f432a676f4
     from lplib import lp_path, lp_affine,lp_potential
     import os
     
-    A = np.array([[5,2],[1,2]])
+    A = np.array([[5,2,1,0],[1,2,0,1]])
     b = np.array([30,14])
-    c = np.array([-5,-4])
+    c = np.array([-5,-4,0,0])
     
     #A = np.array([[2,10,4,1,0,0],[6,5,8,0,1,0],[7,10,8,0,0,1]])
     #b = np.array([425,400,600])
