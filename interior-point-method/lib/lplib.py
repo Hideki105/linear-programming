@@ -9,9 +9,9 @@ class lp_interior_point():
         m = A.shape[1]
         n = A.shape[0]
         np.random.seed(1)
-        x0 = np.ones(m)*1000
+        x0 = np.ones(m)*10
         y0 = np.zeros(n)
-        z0 = np.ones(m)*1000
+        z0 = np.ones(m)*10
 
         self.x0 = x0
         self.y0 = y0
@@ -50,7 +50,7 @@ class lp_interior_point():
         mu_ | 主変数xと双対変数zの平均値xT*z/N        
         w_  | 双対ギャップcT*x - bT*y
         cx_ | 主問題の目的関数cT*x
-        by_ | 双対ex問題の目的関数bT*y
+        by_ | 双対問題の目的関数bT*y
         dt  | 1反復分の計算時間
         x_  | k反復目の主変数xk
         y_  | k反復目の主変数yk
@@ -92,8 +92,10 @@ class lp_path(lp_interior_point):
     　　　
     主双対内点法による処理を記録する。
     
-    mu_ | 主変数xと双対変数zの平均値xT*z/N
+    mu_ | 主変数xと双対変数zの平均値xT*z/N        
     w_  | 双対ギャップcT*x - bT*y
+    cx_ | 主問題の目的関数cT*x
+    by_ | 双対問題の目的関数bT*y
     dt  | 1反復分の計算時間
     x_  | k反復目の主変数xk
     y_  | k反復目の主変数yk
@@ -146,7 +148,7 @@ class lp_path(lp_interior_point):
         return xk,yk,zk
     
     
-    def solve(self,vervose=False,logpath=".",eps=1e-3):
+    def solve(self,vervose=False,logpath=".",eps=1e-6):
         #主双対内点法による数値解析
         t0 = time.time()
         A  = self.A
@@ -169,7 +171,7 @@ class lp_path(lp_interior_point):
                 os.remove(csvpath)
             self.log(xk,yk,zk,muk,wk,dt,logpath)
 
-        for i in range(100):
+        for i in range(200):
             t0 = time.time()
             xk,yk,zk = self.lp_path(A,b,c,xk,yk,zk)
             muk= self.mu(xk,zk)
@@ -178,7 +180,7 @@ class lp_path(lp_interior_point):
             dt = t1 -t0
             if vervose == True:
                 self.log(xk,yk,zk,muk,wk,dt,logpath)
-            if np.abs(muk) < eps:
+            elif np.abs(muk) < eps:
                 break
         return xk,yk,zk
 
@@ -194,8 +196,10 @@ class lp_affine(lp_interior_point):
     　　　
     主双対内点法による処理を記録する。
     
-    mu_ | 主変数xと双対変数zの平均値xT*z/N
+    mu_ | 主変数xと双対変数zの平均値xT*z/N        
     w_  | 双対ギャップcT*x - bT*y
+    cx_ | 主問題の目的関数cT*x
+    by_ | 双対問題の目的関数bT*y
     dt  | 1反復分の計算時間
     x_  | k反復目の主変数xk
     y_  | k反復目の主変数yk
@@ -245,7 +249,7 @@ class lp_affine(lp_interior_point):
         
         return xk,yk,zk
     
-    def solve(self,vervose=False,logpath=".",eps=1e-3):
+    def solve(self,vervose=False,logpath=".",eps=1e-6):
         #主双対内点法による数値解析
         t0 = time.time()
         A  = self.A
@@ -268,7 +272,7 @@ class lp_affine(lp_interior_point):
                 os.remove(csvpath)
             self.log(xk,yk,zk,muk,wk,dt,logpath)
 
-        for i in range(100):
+        for i in range(200):
             t0 = time.time()
             xk,yk,zk = self.lp_affine(A,b,c,xk,yk,zk)
             muk= self.mu(xk,zk)
@@ -277,7 +281,7 @@ class lp_affine(lp_interior_point):
             dt = t1 -t0
             if vervose == True:
                 self.log(xk,yk,zk,muk,wk,dt,logpath)
-            if np.abs(muk) < eps:
+            elif np.abs(muk) < eps:
                 break
         return xk,yk,zk
 
@@ -292,8 +296,10 @@ class lp_potential(lp_interior_point):
     　　　
     主双対内点法による処理を記録する。
     
-    mu_ | 主変数xと双対変数zの平均値xT*z/N
+    mu_ | 主変数xと双対変数zの平均値xT*z/N        
     w_  | 双対ギャップcT*x - bT*y
+    cx_ | 主問題の目的関数cT*x
+    by_ | 双対問題の目的関数bT*y
     dt  | 1反復分の計算時間
     x_  | k反復目の主変数xk
     y_  | k反復目の主変数yk
@@ -357,7 +363,7 @@ class lp_potential(lp_interior_point):
 
         return xk,yk,zk
 
-    def solve(self,vervose=False,logpath=".",eps=1e-3):
+    def solve(self,vervose=False,logpath=".",eps=1e-6):
         #主双対内点法による数値解析
         t0 = time.time()
         A  = self.A
@@ -380,7 +386,7 @@ class lp_potential(lp_interior_point):
                 os.remove(csvpath)
             self.log(xk,yk,zk,muk,wk,dt,logpath)
 
-        for i in range(100):
+        for i in range(200):
             t0 = time.time()
             xk,yk,zk = self.lp_potential(A,b,c,xk,yk,zk)
             muk= self.mu(xk,zk)
@@ -389,15 +395,16 @@ class lp_potential(lp_interior_point):
             dt = t1 -t0
             if vervose == True:
                 self.log(xk,yk,zk,muk,wk,dt,logpath)
-            if np.abs(muk) < eps:
+            elif np.abs(muk) < eps:
                 break
+               
         return xk,yk,zk
 
 if __name__ == "__main__":
     
-    A = np.array([[5,2],[1,2]])
+    A = np.array([[5,2,1,0],[1,2,0,1]])
     b = np.array([30,14])
-    c = np.array([-5,-4])
+    c = np.array([-5,-4,0,0])
     
     #A = np.array([[2,10,4,1,0,0],[6,5,8,0,1,0],[7,10,8,0,0,1]])
     #b = np.array([425,400,600])
