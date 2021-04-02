@@ -135,8 +135,8 @@ class lp_path(lp_interior_point):
         dx  = np.dot( np.dot(Zk_inv,Xk), - r1 + np.dot(Xk_inv,r3) + np.dot(A.T,dy) )
         dz  = np.dot(Xk_inv, r3 - np.dot(Zk,dx))
         
-        alpha_p =  np.min([-xi/dxi for xi,dxi in zip(xk,dx)])
-        alpha_d =  np.min([-zi/dzi for zi,dzi in zip(zk,dz)])
+        alpha_p =  np.min([-xi/dxi for xi,dxi in zip(xk,dx) if xi/dxi < 0])
+        alpha_d =  np.min([-zi/dzi for zi,dzi in zip(zk,dz) if zi/dzi < 0])
         tau = 0.95
         alphak  =  min([tau*alpha_p,tau*alpha_d,1])
         if alphak < 0:alphak = 0.1
@@ -237,8 +237,8 @@ class lp_affine(lp_interior_point):
         dx  = np.dot( np.dot(Zk_inv,Xk), - r1 + np.dot(Xk_inv,r3) + np.dot(A.T,dy) )
         dz  = np.dot(Xk_inv, r3 - np.dot(Zk,dx))
         
-        alpha_p =  np.min([-xi/dxi for xi,dxi in zip(xk,dx)])
-        alpha_d =  np.min([-zi/dzi for zi,dzi in zip(zk,dz)])
+        alpha_p =  np.min([-xi/dxi for xi,dxi in zip(xk,dx) if xi/dxi < 0])
+        alpha_d =  np.min([-zi/dzi for zi,dzi in zip(zk,dz) if zi/dzi < 0])
         tau = 0.95
         alphak  =  min([tau*alpha_p,tau*alpha_d,1])
         if alphak < 0:alphak = 0.1
